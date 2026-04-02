@@ -23,10 +23,13 @@ const loginSchema = Joi.object({
 const updateSchema = Joi.object({
   lastName: Joi.string().min(2).max(50).trim().optional(),
   firstName: Joi.string().min(2).max(50).trim().optional(),
+  email: Joi.string().email().max(50).trim().optional(),
   phone: Joi.string()
     .pattern(/^\(\d{3}\) \d{3}-\d{4}$/)
     .trim()
     .optional(),
+  role: Joi.string().valid("client", "technicien", "admin").optional(),
+  active: Joi.boolean().optional(),
 }).min(1);
 
 module.exports = (schema) => {

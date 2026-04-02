@@ -76,9 +76,93 @@ exports.login = async (req, res, next) => {
         token,
         user: {
           id: user.id,
-          nom: user.nom,
-          courriel: user.courriel,
+          lastName: user.lastName,
+          firstName: user.firstName,
+          email: user.email,
+          phone: user.phone,
+          role: user.role,
         },
+      },
+      path: req.path,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getProfile = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    res.json({
+      status: 200,
+      message: "Profil récupéré avec succès.",
+      data: {
+        id: user.id,
+        lastName: user.lastName,
+        firstName: user.firstName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      },
+      path: req.path,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateProfile = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    const { lastName, firstName, email, phone } = req.body;
+    await user.update({ lastName, firstName, email, phone });
+    res.json({
+      status: 200,
+      message: "Profil mis à jour avec succès.",
+      data: {
+        id: user.id,
+        lastName: user.lastName,
+        firstName: user.firstName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      },
+      path: req.path,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { lastName, firstName, email, phone, role, active } = req.body;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        error: "Not Found",
+        message: "Utilisateur non trouvé.",
+        path: req.path,
+        timestamp: new Date().toISOString(),
+      });
+    }
+    await user.update({ lastName, firstName, email, phone, role, active });
+    res.json({
+      status: 200,
+      message: "Utilisateur mis à jour avec succès.",
+      data: {
+        id: user.id,
+        lastName: user.lastName,
+        firstName: user.firstName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        active: user.active,
       },
       path: req.path,
       timestamp: new Date().toISOString(),
@@ -148,49 +232,6 @@ exports.getUserById = async (req, res, next) => {
   }
 };
 
-exports.updateUser = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { nom, prénom, téléphone } = req.body;
-    const user = await User.findByPk(id);
-    if (!user) {
-      return res.status(404).json({
-        status: 404,
-        error: "Not Found",
-        message: "Utilisateur non trouvé.",
-        path: req.path,
-        timestamp: new Date().toISOString(),
-      });
-    }
-    await user.update({ nom, prénom, téléphone });
-    res.json({
-      status: 200,
-      message: "Utilisateur mis à jour avec succès.",
-      data: {
-        id: user.id,
-        nom: user.nom,
-        prénom: user.prénom,
-        courriel: user.courriel,
-        téléphone: user.téléphone,
-        rôle: user.rôle,
-      },
-      path: req.path,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    if (error.name === "SequelizeUniqueConstraintError") {
-      return res.status(409).json({
-        status: 409,
-        error: "Conflict",
-        message: "Courriel déjà utilisé.",
-        path: req.path,
-        timestamp: new Date().toISOString(),
-      });
-    }
-    next(error);
-  }
-};
-
 exports.deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -204,10 +245,10 @@ exports.deleteUser = async (req, res, next) => {
         timestamp: new Date().toISOString(),
       });
     }
-    await user.destroy();
+    await user.update({ active: false });
     res.json({
       status: 200,
-      message: "Utilisateur supprimé avec succès.",
+      message: "Utilisateur archivé avec succès.",
       path: req.path,
       timestamp: new Date().toISOString(),
     });

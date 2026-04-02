@@ -3,6 +3,8 @@ const User = require("../models/User");
 
 exports.seed = async (req, res, next) => {
   try {
+    // Clear existing users
+    await User.destroy({ where: {} });
     await User.bulkCreate(
       [
         {
