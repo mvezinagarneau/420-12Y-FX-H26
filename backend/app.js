@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const sequelize = require("./config/database");
 const userRoutes = require("./routes/users");
+const dbRoutes = require("./routes/db");
 const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
@@ -14,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/users", userRoutes);
-
+app.use("/db", dbRoutes);
 // Error handling middleware
 app.use(errorHandler);
 

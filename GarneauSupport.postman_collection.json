@@ -2,23 +2,23 @@
   "info": {
     "name": "GarneauSupport API Tests",
     "description": "Collection de tests Postman pour l'API GarneauSupport - Semaine 1",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "12345678-1234-1234-1234-123456789012",
+    "_postman_exported_at": "2024-04-02T12:00:00.000Z",
+    "_postman_exported_using": "Postman/10.24.0"
   },
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:3000",
-      "type": "string"
+      "value": "http://localhost:3000"
     },
     {
       "key": "token",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
       "key": "userId",
-      "value": "",
-      "type": "string"
+      "value": ""
     }
   ],
   "item": [
@@ -444,6 +444,35 @@
             "exec": [
               "pm.test(\"Status code is 200\", function () {",
               "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seed Database",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/db/seed",
+          "host": ["{{baseUrl}}"],
+          "path": ["db", "seed"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response has success message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.eql(\"Database seeded successfully\");",
               "});"
             ],
             "type": "text/javascript"
