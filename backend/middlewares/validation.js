@@ -13,6 +13,7 @@ const registerSchema = Joi.object({
     .pattern(/^\(\d{3}\) \d{3}-\d{4}$/)
     .trim()
     .required(),
+  role: Joi.string().valid("client", "technicien", "admin").optional(),
 });
 
 const loginSchema = Joi.object({
@@ -32,23 +33,38 @@ const updateSchema = Joi.object({
   active: Joi.boolean().optional(),
 }).min(1);
 
-module.exports = (schema) => {
-  return (req, res, next) => {
-    const { error } = schema.validate(req.body);
-    if (error) {
-      const isRequired = error.details[0].type === "any.required";
-      const status = isRequired ? 400 : 422;
-      const errorType = isRequired ? "Bad Request" : "Unprocessable Entity";
-      return res.status(status).json({
-        status,
-        error: errorType,
-        message: error.details[0].message,
-        path: req.path,
-        timestamp: new Date().toISOString(),
-      });
-    }
-    next();
-  };
+const passwordUpdateSchema = Joi.object({
+  currentPassword: Joi.string().required(),
+  newPassword: Joi.string()
+    .min(6)
+    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#?!@$ %^&*\-]).*$/)
+    .required(),
+  confirmNewPassword: Joi.string().valid(Joi.ref("newPassword")).required(),
+});
+
+module.exports = {
+  validation: (schema) => {
+    return (req, res, next) => {
+      const { error } = schema.validate(req.body);
+      if (error) {
+        const isRequired = error.details[0].type === "any.required";
+        const status = isRequired ? 400 : 422;
+        const errorType = isRequired ? "Bad Request" : "Unprocessable Entity";
+        return res.status(status).json({
+          status,
+          error: errorType,
+          message: error.details[0].message,
+          path: req.path,
+          timestamp: new Date().toISOString(),
+        });
+      }
+      next();
+    };
+  },
+  registerSchema,
+  loginSchema,
+  updateSchema,
+  passwordUpdateSchema,
 };
 
 module.exports.registerSchema = registerSchema;

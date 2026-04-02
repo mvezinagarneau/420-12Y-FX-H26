@@ -53,7 +53,11 @@
             class="form-control"
             :class="{ 'is-invalid': v$.email.$error }"
             id="email"
-            @input="v$.email.$touch()"
+            @input="
+              v$.email.$touch();
+              emailError = '';
+            "
+            @blur="checkEmail"
           />
           <div v-if="v$.email.$error" class="text-danger">
             <span v-if="v$.email.required.$invalid"
@@ -65,6 +69,9 @@
             <span v-else-if="v$.email.maxLength.$invalid"
               >Le courriel ne peut pas dépasser 50 caractères</span
             >
+          </div>
+          <div v-if="emailError" class="text-danger">
+            {{ emailError }}
           </div>
         </div>
         <div class="mb-3">
@@ -151,6 +158,7 @@ import {
 } from "@vuelidate/validators";
 import { useAuthStore } from "../store/auth";
 import { useRouter } from "vue-router";
+import api from "../services/api";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -197,6 +205,22 @@ const v$ = useVuelidate(rules, form);
 
 const loading = ref(false);
 const error = ref("");
+const emailError = ref("");
+
+const checkEmail = async () => {
+  if (form.value.email && v$.value.email.email && !v$.value.email.$error) {
+    try {
+      const response = await api.checkEmailExists(form.value.email);
+      if (response.data.data.exists) {
+        emailError.value = "Courriel déjà utilisé.";
+      } else {
+        emailError.value = "";
+      }
+    } catch (err) {
+      console.error("Error checking email:", err);
+    }
+  }
+};
 
 const handleRegister = async () => {
   const isValid = await v$.value.$validate();

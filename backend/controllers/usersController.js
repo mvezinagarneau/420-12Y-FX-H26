@@ -4,7 +4,14 @@ const User = require("../models/User");
 
 exports.register = async (req, res, next) => {
   try {
-    const { lastName, firstName, email, password, phone } = req.body;
+    const {
+      lastName,
+      firstName,
+      email,
+      password,
+      phone,
+      role = "client",
+    } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       lastName,
@@ -12,7 +19,7 @@ exports.register = async (req, res, next) => {
       email,
       password: hashedPassword,
       phone,
-      role: "client",
+      role,
       active: true,
     });
     res.status(201).json({
@@ -137,10 +144,42 @@ exports.updateProfile = async (req, res, next) => {
   }
 };
 
+exports.updatePassword = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    const { currentPassword, newPassword } = req.body;
+
+    // Check current password
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
+      return res.status(400).json({
+        status: 400,
+        error: "Bad Request",
+        message: "Mot de passe actuel incorrect.",
+        path: req.path,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await user.update({ password: hashedPassword });
+
+    res.json({
+      status: 200,
+      message: "Mot de passe mis à jour avec succès.",
+      path: req.path,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { lastName, firstName, email, phone, role, active } = req.body;
+    const updateData = req.body;
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({
@@ -151,7 +190,7 @@ exports.updateUser = async (req, res, next) => {
         timestamp: new Date().toISOString(),
       });
     }
-    await user.update({ lastName, firstName, email, phone, role, active });
+    await user.update(updateData);
     res.json({
       status: 200,
       message: "Utilisateur mis à jour avec succès.",
@@ -253,6 +292,59 @@ exports.deleteUser = async (req, res, next) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+exports.toggleActive = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { active } = req.body;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        error: "Not Found",
+        message: "Utilisateur non trouvé.",
+        path: req.path,
+        timestamp: new Date().toISOString(),
+      });
+    }
+    await user.update({ active });
+    res.json({
+      status: 200,
+      message: "Statut actif mis à jour avec succès.",
+      path: req.path,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.checkEmailExists = async (req, res, next) => {
+  try {
+    const { email } = req.query;
+    if (!email) {
+      return res.status(400).json({
+        status: 400,
+        error: "Bad Request",
+        message: "Email is required.",
+        path: req.path,
+        timestamp: new Date().toISOString(),
+      });
+    }
+    const user = await User.findOne({ where: { email } });
+    console.log(`Email check for: ${email}, exists: ${!!user}`);
+    res.json({
+      status: 200,
+      message: "Email check successful.",
+      data: { exists: !!user },
+      path: req.path,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Error checking email existence:", error);
     next(error);
   }
 };

@@ -110,7 +110,11 @@
                   class="form-control"
                   :class="{ 'is-invalid': v$.email.$error }"
                   required
-                  @input="v$.email.$touch()"
+                  @input="
+                    v$.email.$touch();
+                    emailError = '';
+                  "
+                  @blur="checkEmail"
                 />
                 <div v-if="v$.email.$error" class="text-danger">
                   <span v-if="v$.email.required.$invalid"
@@ -122,6 +126,9 @@
                   <span v-else-if="v$.email.maxLength.$invalid"
                     >Le courriel ne peut pas dépasser 50 caractères</span
                   >
+                </div>
+                <div v-if="emailError" class="text-danger">
+                  {{ emailError }}
                 </div>
               </div>
               <div class="mb-3" v-if="!isEditing">
@@ -144,6 +151,25 @@
                   <span v-else-if="v$.password.pattern.$invalid"
                     >Le mot de passe doit contenir au moins une minuscule, une
                     majuscule, un chiffre et un caractère spécial</span
+                  >
+                </div>
+              </div>
+              <div class="mb-3" v-if="!isEditing">
+                <label class="form-label">Confirmer mot de passe</label>
+                <input
+                  v-model="form.confirmPassword"
+                  type="password"
+                  class="form-control"
+                  :class="{ 'is-invalid': v$.confirmPassword.$error }"
+                  required
+                  @input="v$.confirmPassword.$touch()"
+                />
+                <div v-if="v$.confirmPassword.$error" class="text-danger">
+                  <span v-if="v$.confirmPassword.required.$invalid"
+                    >La confirmation du mot de passe est requise</span
+                  >
+                  <span v-else-if="v$.confirmPassword.sameAsPassword.$invalid"
+                    >Les mots de passe ne correspondent pas</span
                   >
                 </div>
               </div>
@@ -188,6 +214,7 @@
                 {{ isEditing ? "Modifier" : "Ajouter" }}
               </button>
             </form>
+            <p v-if="error" class="text-danger mt-3">{{ error }}</p>
           </div>
         </div>
       </div>
@@ -210,11 +237,14 @@ import {
 
 const users = ref([]);
 const isEditing = ref(false);
+const error = ref("");
+const emailError = ref("");
 const form = ref({
   lastName: "",
   firstName: "",
   email: "",
   password: "",
+  confirmPassword: "",
   phone: "",
   role: "client",
   active: true,
@@ -235,6 +265,15 @@ const rules = computed(() => ({
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#?!@$ %^&*\-]).*$/.test(
               value,
             ),
+        ),
+      },
+  confirmPassword: isEditing.value
+    ? {}
+    : {
+        required,
+        sameAsPassword: helpers.withMessage(
+          "Les mots de passe ne correspondent pas",
+          (value) => value === form.value.password,
         ),
       },
   phone: {
@@ -263,33 +302,56 @@ const loadUsers = async () => {
 
 const openCreateModal = () => {
   isEditing.value = false;
+  error.value = "";
+  emailError.value = "";
   form.value = {
     lastName: "",
     firstName: "",
     email: "",
     password: "",
+    confirmPassword: "",
     phone: "",
     role: "client",
     active: true,
   };
+  v$.value.$reset();
   const modal = new Modal(document.getElementById("userModal"));
   modal.show();
 };
 
 const openEditModal = (user) => {
   isEditing.value = true;
+  error.value = "";
+  emailError.value = "";
   form.value = { ...user };
   delete form.value.password; // don't send password
+  delete form.value.confirmPassword; // not needed for edit
+  v$.value.$reset();
   const modal = new Modal(document.getElementById("userModal"));
   modal.show();
 };
 
 const toggleActive = async (user) => {
   try {
-    await api.updateUser(user.id, { active: !user.active });
+    await api.toggleActive(user.id, !user.active);
     await loadUsers();
   } catch (error) {
     console.error(error);
+  }
+};
+
+const checkEmail = async () => {
+  if (form.value.email && v$.value.email.email && !v$.value.email.$error) {
+    try {
+      const response = await api.checkEmailExists(form.value.email);
+      if (response.data.data.exists) {
+        emailError.value = "Courriel déjà utilisé.";
+      } else {
+        emailError.value = "";
+      }
+    } catch (err) {
+      console.error("Error checking email:", err);
+    }
   }
 };
 
@@ -309,14 +371,22 @@ const handleSubmit = async () => {
       await api.updateUser(form.value.id, data);
     } else {
       // For create, use register
-      data.confirmPassword = data.password;
+      console.log("Creating user with data:", data);
+      delete data.active; // Not needed for registration, users are active by default
       await api.register(data);
     }
     await loadUsers();
     const modal = Modal.getInstance(document.getElementById("userModal"));
     modal.hide();
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error("Error creating/updating user:", err.response?.data || err);
+    const message =
+      err.response?.data?.message || "Erreur lors de la création/mise à jour";
+    if (message === "Courriel déjà utilisé.") {
+      emailError.value = message;
+    } else {
+      error.value = message;
+    }
   }
 };
 </script>

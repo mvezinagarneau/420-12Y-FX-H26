@@ -10,6 +10,9 @@ const api = {
   updateProfile(data) {
     return axios.put("/users/profile", data);
   },
+  updatePassword(data) {
+    return axios.put("/users/profile/password", data);
+  },
   getUsers() {
     return axios.get("/users");
   },
@@ -19,8 +22,14 @@ const api = {
   updateUser(id, data) {
     return axios.put(`/users/${id}`, data);
   },
+  toggleActive(id, active) {
+    return axios.patch(`/users/${id}/active`, { active });
+  },
   deleteUser(id) {
     return axios.delete(`/users/${id}`);
+  },
+  checkEmailExists(email) {
+    return axios.get(`/users/check-email?email=${encodeURIComponent(email)}`);
   },
 };
 

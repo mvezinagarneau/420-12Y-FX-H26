@@ -80,6 +80,88 @@
       </form>
       <p v-if="error" class="text-danger mt-3">{{ error }}</p>
       <p v-if="success" class="text-success mt-3">{{ success }}</p>
+
+      <hr class="my-4" />
+
+      <h3>Changer le mot de passe</h3>
+      <form @submit.prevent="handlePasswordUpdate">
+        <div class="mb-3">
+          <label for="currentPassword" class="form-label"
+            >Mot de passe actuel</label
+          >
+          <input
+            v-model="passwordForm.currentPassword"
+            type="password"
+            class="form-control"
+            :class="{ 'is-invalid': passwordV$.currentPassword.$error }"
+            id="currentPassword"
+            @input="passwordV$.currentPassword.$touch()"
+          />
+          <div v-if="passwordV$.currentPassword.$error" class="text-danger">
+            Le mot de passe actuel est requis
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="newPassword" class="form-label"
+            >Nouveau mot de passe</label
+          >
+          <input
+            v-model="passwordForm.newPassword"
+            type="password"
+            class="form-control"
+            :class="{ 'is-invalid': passwordV$.newPassword.$error }"
+            id="newPassword"
+            @input="passwordV$.newPassword.$touch()"
+          />
+          <div v-if="passwordV$.newPassword.$error" class="text-danger">
+            <span v-if="passwordV$.newPassword.required.$invalid"
+              >Le nouveau mot de passe est requis</span
+            >
+            <span v-else-if="passwordV$.newPassword.minLength.$invalid"
+              >Le mot de passe doit contenir au moins 6 caractères</span
+            >
+            <span v-else-if="passwordV$.newPassword.pattern.$invalid"
+              >Le mot de passe doit contenir au moins une minuscule, une
+              majuscule, un chiffre et un caractère spécial</span
+            >
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="confirmNewPassword" class="form-label"
+            >Confirmer le nouveau mot de passe</label
+          >
+          <input
+            v-model="passwordForm.confirmNewPassword"
+            type="password"
+            class="form-control"
+            :class="{ 'is-invalid': passwordV$.confirmNewPassword.$error }"
+            id="confirmNewPassword"
+            @input="passwordV$.confirmNewPassword.$touch()"
+          />
+          <div v-if="passwordV$.confirmNewPassword.$error" class="text-danger">
+            <span v-if="passwordV$.confirmNewPassword.required.$invalid"
+              >La confirmation est requise</span
+            >
+            <span
+              v-else-if="
+                passwordV$.confirmNewPassword.sameAsNewPassword.$invalid
+              "
+              >Les mots de passe ne correspondent pas</span
+            >
+          </div>
+        </div>
+        <button
+          type="submit"
+          class="btn btn-warning"
+          :disabled="passwordLoading"
+        >
+          Changer le mot de passe
+        </button>
+      </form>
+      <p v-if="passwordError" class="text-danger mt-3">{{ passwordError }}</p>
+      <p v-if="passwordSuccess" class="text-success mt-3">
+        {{ passwordSuccess }}
+      </p>
     </div>
   </div>
 </template>
@@ -108,6 +190,12 @@ const form = ref({
   phone: "",
 });
 
+const passwordForm = ref({
+  currentPassword: "",
+  newPassword: "",
+  confirmNewPassword: "",
+});
+
 const rules = {
   lastName: { required, minLength: minLength(2), maxLength: maxLength(50) },
   firstName: { required, minLength: minLength(2), maxLength: maxLength(50) },
@@ -120,11 +208,36 @@ const rules = {
   },
 };
 
+const passwordRules = {
+  currentPassword: { required },
+  newPassword: {
+    required,
+    minLength: minLength(6),
+    pattern: helpers.withMessage(
+      "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial",
+      (value) =>
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#?!@$ %^&*\-]).*$/.test(value),
+    ),
+  },
+  confirmNewPassword: {
+    required,
+    sameAsNewPassword: helpers.withMessage(
+      "Les mots de passe ne correspondent pas",
+      (value) => value === passwordForm.value.newPassword,
+    ),
+  },
+};
+
 const v$ = useVuelidate(rules, form);
+const passwordV$ = useVuelidate(passwordRules, passwordForm);
 
 const loading = ref(false);
 const error = ref("");
 const success = ref("");
+
+const passwordLoading = ref(false);
+const passwordError = ref("");
+const passwordSuccess = ref("");
 
 const loadProfile = async () => {
   try {
@@ -172,6 +285,31 @@ const handleUpdate = async () => {
       err.response?.data?.message || "Erreur lors de la mise à jour";
   } finally {
     loading.value = false;
+  }
+};
+
+const handlePasswordUpdate = async () => {
+  const isValid = await passwordV$.value.$validate();
+  if (!isValid) return;
+  passwordLoading.value = true;
+  passwordError.value = "";
+  passwordSuccess.value = "";
+  try {
+    await api.updatePassword(passwordForm.value);
+    passwordSuccess.value = "Mot de passe mis à jour avec succès";
+    passwordForm.value = {
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    };
+    passwordV$.value.$reset();
+  } catch (err) {
+    console.error(err);
+    passwordError.value =
+      err.response?.data?.message ||
+      "Erreur lors de la mise à jour du mot de passe";
+  } finally {
+    passwordLoading.value = false;
   }
 };
 
