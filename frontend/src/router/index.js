@@ -5,6 +5,7 @@ import Register from "../views/Register.vue";
 import Dashboard from "../views/Dashboard.vue";
 import Profile from "../views/Profile.vue";
 import Users from "../views/Users.vue";
+import Categories from "../views/Categories.vue";
 
 const routes = [
   { path: "/", redirect: "/dashboard" },
@@ -23,6 +24,11 @@ const routes = [
   {
     path: "/users",
     component: Users,
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
+    path: "/categories",
+    component: Categories,
     meta: { requiresAuth: true, requiresAdmin: true },
   },
 ];

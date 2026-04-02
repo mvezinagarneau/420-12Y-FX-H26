@@ -26,6 +26,14 @@
                 >Utilisateurs</router-link
               >
             </li>
+            <li
+              class="nav-item"
+              v-if="isAuthenticated && user?.role === 'admin'"
+            >
+              <router-link class="nav-link" to="/categories"
+                >Catégories</router-link
+              >
+            </li>
           </ul>
           <ul class="navbar-nav">
             <li class="nav-item" v-if="isAuthenticated">

@@ -42,6 +42,20 @@ const passwordUpdateSchema = Joi.object({
   confirmNewPassword: Joi.string().valid(Joi.ref("newPassword")).required(),
 });
 
+const ticketSchema = Joi.object({
+  title: Joi.string().min(5).max(255).trim().required(),
+  description: Joi.string().min(10).trim().required(),
+  priority: Joi.string()
+    .valid("Basse", "Moyenne", "Haute", "Critique")
+    .optional(),
+  categoryId: Joi.number().integer().required(),
+});
+
+const commentSchema = Joi.object({
+  content: Joi.string().min(1).trim().required(),
+  type: Joi.string().valid("public", "internal").optional(),
+});
+
 module.exports = {
   validation: (schema) => {
     return (req, res, next) => {
@@ -65,6 +79,8 @@ module.exports = {
   loginSchema,
   updateSchema,
   passwordUpdateSchema,
+  ticketSchema,
+  commentSchema,
 };
 
 module.exports.registerSchema = registerSchema;

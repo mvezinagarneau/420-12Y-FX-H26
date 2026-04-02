@@ -106,7 +106,7 @@ Structure de l’application
 
 - L’interface utilisateur doit être responsive et accessible. Utilisez les classes de Bootstrap pour assurer la responsivité et suivez les meilleures pratiques d’accessibilité.
 
-- Les formulaires doivent être validés à l’aide de la bibliothèque Vuelidate. Les erreurs de validation doivent être affichées de manière claire et informative pour l’utilisateur.
+- Les formulaires doivent être validés à l’aide de la bibliothèque Vuelidate. Les erreurs de validation doivent être affichées de manière claire et informative pour l’utilisateur. Tu ne dois jamais utiliser de validation HTML5. Utilise les classes de Bootstrap pour styliser les messages d’erreur de validation.
 
 - La sécurité du frontend doit être assurée en suivant les meilleures pratiques de développement web, telles que la validation des entrées, la gestion des erreurs et la protection contre les attaques XSS et CSRF.
 
