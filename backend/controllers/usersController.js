@@ -4,33 +4,49 @@ const User = require("../models/User");
 
 exports.register = async (req, res, next) => {
   try {
-    const { nom, courriel, motDePasse } = req.body;
-    const hashedPassword = await bcrypt.hash(motDePasse, 10);
+    const { lastName, firstName, email, password, phone } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
-      nom,
-      courriel,
-      motDePasse: hashedPassword,
+      lastName,
+      firstName,
+      email,
+      password: hashedPassword,
+      phone,
+      role: "client",
+      active: true,
     });
     res.status(201).json({
       status: 201,
       message: "Utilisateur créé avec succès.",
       data: {
         id: user.id,
-        nom: user.nom,
-        courriel: user.courriel,
+        lastName: user.lastName,
+        firstName: user.firstName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
       },
       path: req.path,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return res.status(409).json({
+        status: 409,
+        error: "Conflict",
+        message: "Courriel déjà utilisé.",
+        path: req.path,
+        timestamp: new Date().toISOString(),
+      });
+    }
     next(error);
   }
 };
 
 exports.login = async (req, res, next) => {
   try {
-    const { courriel, motDePasse } = req.body;
-    const user = await User.findOne({ where: { courriel } });
+    const { email, password } = req.body;
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(404).json({
         status: 404,
@@ -40,7 +56,7 @@ exports.login = async (req, res, next) => {
         timestamp: new Date().toISOString(),
       });
     }
-    const isMatch = await bcrypt.compare(motDePasse, user.motDePasse);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({
         status: 401,
@@ -74,7 +90,17 @@ exports.login = async (req, res, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.findAll({ attributes: ["id", "nom", "courriel"] });
+    const users = await User.findAll({
+      attributes: [
+        "id",
+        "lastName",
+        "firstName",
+        "email",
+        "phone",
+        "role",
+        "active",
+      ],
+    });
     res.json({
       status: 200,
       message: "Utilisateurs récupérés avec succès.",
@@ -91,7 +117,15 @@ exports.getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findByPk(id, {
-      attributes: ["id", "nom", "courriel"],
+      attributes: [
+        "id",
+        "lastName",
+        "firstName",
+        "email",
+        "phone",
+        "role",
+        "active",
+      ],
     });
     if (!user) {
       return res.status(404).json({
@@ -117,7 +151,7 @@ exports.getUserById = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { nom, courriel } = req.body;
+    const { nom, prénom, téléphone } = req.body;
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({
@@ -128,19 +162,31 @@ exports.updateUser = async (req, res, next) => {
         timestamp: new Date().toISOString(),
       });
     }
-    await user.update({ nom, courriel });
+    await user.update({ nom, prénom, téléphone });
     res.json({
       status: 200,
       message: "Utilisateur mis à jour avec succès.",
       data: {
         id: user.id,
         nom: user.nom,
+        prénom: user.prénom,
         courriel: user.courriel,
+        téléphone: user.téléphone,
+        rôle: user.rôle,
       },
       path: req.path,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return res.status(409).json({
+        status: 409,
+        error: "Conflict",
+        message: "Courriel déjà utilisé.",
+        path: req.path,
+        timestamp: new Date().toISOString(),
+      });
+    }
     next(error);
   }
 };

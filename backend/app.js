@@ -20,7 +20,7 @@ app.use(errorHandler);
 
 // Sync database
 sequelize
-  .sync()
+  .sync({ alter: true })
   .then(() => {
     console.log("Database synced");
   })
