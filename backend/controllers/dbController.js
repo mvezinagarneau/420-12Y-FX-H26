@@ -187,6 +187,32 @@ exports.seed = async (req, res, next) => {
           technicianId: users[3].id,
           categoryId: categories[0].id, // Matériel
         },
+        {
+          title: "Problème de sauvegarde",
+          description: "Les sauvegardes automatiques ne se lancent plus.",
+          status: "Ouvert",
+          priority: "Haute",
+          clientId: users[0].id,
+          categoryId: categories[1].id, // Logiciel
+        },
+        {
+          title: "VPN ne se connecte pas",
+          description: "Impossible de se connecter au VPN d'entreprise.",
+          status: "En cours",
+          priority: "Critique",
+          clientId: users[1].id,
+          technicianId: users[2].id,
+          categoryId: categories[2].id, // Réseau
+        },
+        {
+          title: "Demande d'accès supplémentaire",
+          description: "Besoin d'accès à une nouvelle application.",
+          status: "Résolu",
+          priority: "Basse",
+          clientId: users[0].id,
+          technicianId: users[3].id,
+          categoryId: categories[3].id, // Sécurité
+        },
       ],
       { ignoreDuplicates: true },
     );

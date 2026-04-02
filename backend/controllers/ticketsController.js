@@ -15,6 +15,15 @@ exports.getAllTickets = async (req, res, next) => {
       sortOrder = "DESC",
     } = req.query;
     const where = { archived: false };
+
+    // Role-based filtering
+    if (req.user.role === "client") {
+      where.userId = req.user.id;
+    } else if (req.user.role === "technicien") {
+      where.technicianId = req.user.id;
+    }
+    // Admin sees all
+
     if (status) where.status = status;
     if (categoryId) where.categoryId = categoryId;
     if (technicianId) where.technicianId = technicianId;

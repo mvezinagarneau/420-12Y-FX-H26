@@ -43,7 +43,7 @@ const passwordUpdateSchema = Joi.object({
 });
 
 const ticketSchema = Joi.object({
-  title: Joi.string().min(5).max(255).trim().required(),
+  title: Joi.string().min(3).max(100).trim().required(),
   description: Joi.string().min(10).trim().required(),
   priority: Joi.string()
     .valid("Basse", "Moyenne", "Haute", "Critique")
