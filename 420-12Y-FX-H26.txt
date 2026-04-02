@@ -1,0 +1,389 @@
+Activité synthèse de programme
+Énoncé du travail
+Remise finale : mercredi 13 mai 2026 à 17h00
+Table des matières
+1 - MISE EN CONTEXTE	1
+1.1 - Objectif	1
+1.2 – Calendrier	1
+1.3 – Rencontres de suivi	2
+2 – CONTRAINTES DE RÉALISATION	2
+2.1 – Technologies à utiliser	2
+2.2 – Utilisation de Git	3
+2.3 – Contraintes techniques	3
+Note générale	3
+3 – TRAVAIL À RÉALISER	3
+3.1 – Fonctionnalités à développer	3
+Avant la première présentation	3
+Avant la deuxième présentation	4
+Avant la remise finale	5
+Navigation	6
+3.2 – Résumé des rôles de l’application	7
+3.3 – Jeux de données	7
+3.4 – Tests automatisés	8
+3.5 – Validation des données	8
+Utilisateur	8
+Examen	9
+Question	9
+ChoixReponse	9
+CopieEtudiante	9
+ReponseEtudiant	9
+3.5 – Sécurité de l’application	10
+4 – REMISE ET ÉVALUATION	10
+4.1 – Remise sur Léa	10
+4.2 – Grille d’évaluation	10
+1 - MISE EN CONTEXTE
+1.1 - Objectif
+Cette activité de synthèse est l’occasion pour vous de démontrer, en l’espace de trois semaines, les compétences acquises durant vos trois années d’études. Le travail demandé consiste à développer une application Web, appuyée par une base de données, de type Help Desk permettant la gestion complète des incidents (tickets) dans une organisation. L’application, nommée GarneauSupport?? doit permettre ; 
+•	La gestion des comptes client et techniciens
+•	La gestion des catégories d’incidents
+•	L’assignation à des techniciens
+•	La gestion d’un cycle de vie structuré
+•	La communication entre utilisateurs et techniciens
+•	La résolution et la fermeture des incidents
+
+1.2 – Calendrier
+Pour ceux qui souhaitent travailler au Cégep, il est possible de prendre rendez-vous avec nous pour réserver un local. Voici le calendrier du déroulement, avec les dates importantes. 
+Semaines	Lundi  	Mardi	Mercredi	Jeudi	Vendredi
+1 				Présentation de l’ASP  
+(23 avril) 
+	
+2 			Présentation de la 
+première semaine
+ (29 avril) 		
+3 			Présentation de la 
+deuxième semaine
+ (6 mai) 		
+4			Remise finale 
+(13 mai à 17h00)		
+
+1.3 – Rencontres de suivi
+Une rencontre individuelle de suivi de l’avancement du projet aura lieu les mercredis des deux premières semaines. De plus, la remise finale aura lieu le mercredi 13 mai.
+Important : L’horaire de passage est disponible dans ce document : Horaire-ASP-A25
+La rencontre sera d’une durée maximale de 15 minutes. 
+•	Vous devez vous assurer d’avoir suffisamment de données de tests pour bien présenter les fonctionnalités. 
+Note : Vous êtes autorisé à utiliser l’intelligence artificielle SEULEMENT pour générer des données réalistes.
+•	Avant chaque présentation, votre code doit être à jour sur le dépôt git. La date du commit qui sera évalué pour les deux premières présentations devra être remise le mercredi à 8h, sur Léa dans un fichier .txt.
+Le mercredi 13 mai le dernier commit devra être effectué avant 17 h.
+•	Les présentations de suivi comptent pour 15% de la note finale chacune. Les points suivants seront évalués : 
+o	Respect des spécifications fonctionnelles (avec validations complétées) ; 
+o	Qualité des interfaces graphiques. 
+•	La rétroaction vous sera fournie au plus tard le vendredi suivant la présentation.
+2 – CONTRAINTES DE RÉALISATION
+2.1 – Technologies à utiliser
+Liste des technologies à utiliser pour réaliser l’application
+•	Votre application doit utiliser un Backend Node.js avec Express.
+•	Votre Frontend doit utiliser Vue.js (version 3) avec l’API Composition.
+•	Votre Frontend et votre Backend doivent être dans deux projets différents (deux dossiers différents) et communiquer via des requêtes HTTP (utilisez le modèle REST).
+•	Vous devez obligatoirement utiliser Bootstrap 5 (version Sass) pour le style de votre application. Vos propres styles devront aussi utiliser Sass.
+•	Votre application doit utiliser une base de données SQL avec le moteur MySQL ou 
+•	Votre Backend doit utiliser l’ORM Sequelize pour communiquer avec votre base de données.
+Note importante concernant l'utilisation de l'intelligence artificielle (IA)
+Conformément à la Politique institutionnelle d’évaluation des apprentissages (PIEA) du Cégep Garneau, l’utilisation de l’intelligence artificielle (ex. : ChatGPT, Copilot, etc.) dans la réalisation de ce travail est considérée comme une forme de plagiat ou de tricherie. Tout recours à ces outils sans autorisation constitue une infraction à la PIEA et peut mener à une déclaration de fraude.[MV1.1]
+2.2 – Utilisation de Git
+Le développement de votre application doit être fait dans un dépôt sur gitlab.com.
+•	Le dépôt doit être privé ;
+•	Vous devez ajouter l’utilisateur @dept-info-garneau en tant que « Developer »;
+•	Il n’y a pas de stratégie de versionnage imposée. La seule contrainte est d’avoir un code à jour sur la branche main avant la date de remise pour chaque semaine de travail. 
+2.3 – Contraintes techniques
+•	Le système de navigation doit être adapté aux différents rôles d’utilisateur.
+•	Toutes les pages HTML générées doivent être valides d’après le W3C.
+•	Le CSS doit être généré par Sass.
+•	La mise en page doit bien s’adapter à divers types d’appareils (responsive).
+•	Tous les documents produits dans le cadre de ce travail doivent s'afficher correctement avec les navigateurs Web Firefox et Chrome.
+Évolution des exigences[MV2.1][GD2.2][MV2.3]
+Dans un contexte de développement agile, il est important de comprendre que les besoins du client peuvent évoluer au cours du projet.
+Ainsi, durant les sprints de développement, le client (enseignant) pourrait :
+•	Demander des ajustements mineurs 
+•	Proposer des améliorations fonctionnelles 
+•	Clarifier ou modifier certaines règles métier 
+
+Ces changements peuvent survenir :
+•	Pendant un sprint (de façon encadrée) 
+•	Entre deux sprints (lors des suivis) 
+
+Note générale
+Toute action d’ajout, de modification ou de suppression doit générer une rétroaction visuelle claire pour l’utilisateur. Les suppressions doivent être confirmées avant d’être exécutées. Par ailleurs, les éléments supprimés ne sont pas effacés physiquement de la base de données, mais marqués comme archivés et deviennent ainsi inaccessibles dans l’application.
+
+3 – TRAVAIL À RÉALISER
+3.1 – Fonctionnalités à développer 
+Tout au long du développement, vous devez respecter l’échéancier prévu. Voici la liste des fonctionnalités qui devront être développées à la fin de chaque semaine.
+Avant la première présentation
+Authentification et gestion de comptes
+•	Le site Web doit posséder un menu pour l’authentification et la création de comptes. Ce menu doit être accessible sur toutes les pages du site.
+•	Un utilisateur peut :
+o	Créer un compte client: 
+	Un compte utilisateur doit respecter les contraintes  suivantes[GD3.1].
+	Votre formulaire doit afficher un message de rétroaction adapté dans le cas d’un utilisateur dont le compte est désactivé 
+	Une validation dynamique sur le courriel doit être faite :
+•	Le courriel n’existe pas déjà.
+o	Accéder à son profil :
+	Voir ses informations personnelles.
+	Changer son mot de passe.
+•	Un administrateur peut :
+o	Créer un compte utilisateur (idem que client), mais ayant un le rôle technicien.
+•	L’administrateur peut :
+o	Voir la liste complète des comptes utilisateurs (clients et techniciens).
+o	Activer / désactiver un compte.
+o	Un compte désactivé ne peut pas accéder à l’application.
+•	Le compte administrateur sera créé directement dans la base de données.
+AJOUTER PROFIL
+Un visiteur peut :
+•	Voir une courte présentation de la plateforme.
+•	Accéder aux liens vers l’inscription et la connexion.
+o	Connexion par courriel et mot de passe.[NB4.1]
+•	Un utilisateur connecté est redirigé vers son tableau de bord.
+
+Avant la deuxième présentation
+•	Tableau de bord client :
+o	Affiche la liste de ses tickets actifs 
+	Titre.
+	Statut 
+	Priorité
+	Date et heure de création
+	Lien « voir détail » (affiche la page de modification d’un ticket).
+o	Affiche la liste ses tickets fermés.
+	Même champs que les tickets actifs.
+o	Pour chaque liste :
+	Trier par priorité et date et heure de création
+
+
+•	Tableau de bord technicien :
+o	Affiche la liste des tickets actifs
+	Titre.
+	Statut (Couleur selon le « Service Licence Agreement [MV5.1]» (SLA))
+	Priorité
+	Date et heure de création
+	Élément visuel permettant d’identifier les nouveaux tickets lui étant assigné non lus.
+	Actions
+	Lien « voir détail » (affiche la page de modification d’un ticket).
+	Bouton s’assigner un ticket 
+o	Affiche la liste des tickets fermés.
+	Même champs que les tickets actifs sans le bouton s’assigner un ticket.
+o	Pour chaque liste :
+	Trier par priorité [MV6.1]et date et heure de création
+	Filtrer par statut, catégorie et « Assigner à »
+	Chercher par titre et description
+
+
+
+•	Tableau de bord Administrateur :
+o	Même tableau que technicien
+o	Action supplémentaire : 
+	Possibilité d’archiver un ticket
+	Possibilité d’assigner un ticket à un technicien
+
+
+Création / gestion d’un incident (ticket)
+
+•	Un incident doit respecter les contraintes suivantes.
+o	Un nouveau ticket a le statut « Ouvert » par défaut.
+o	Seul un technicien ou un administrateur peut modifier un ticket.
+	Les champs pouvant être modifié sont :
+•	L’assignation
+•	Le statut[NB7.1]
+
+
+•	Le cycle de vie d’un incident suit une séquence de statuts logiques
+
+Statuts :
+1.	Ouvert (par défaut)
+2.	Assigné
+3.	En cours
+4.	En attente
+5.	Résolu
+6.	Fermé
+7.	Archivé
+
+Transitions autorisées
+
+De	Vers	Par
+Ouvert	Assigné[MV8.1]	Admin / Technicien
+Assigné	En cours	Admin / Technicien
+En cours	En attente	Admin / Technicien
+En attente	En cours	Admin / Technicien
+En cours	Résolu	Admin / Technicien
+Résolu	Fermé	Client /Admin
+Fermé	Archivé	Admin
+
+Règles importantes[MV9.1][NB9.2]
+•	Seul l’administrateur peut assigner un ticket à un autre technicien.
+•	Impossible de modifier un ticket archivé.
+•	Seul le client ou l’administrateur peut fermer un ticket.
+•	Seul un administrateur peut archiver un ticket.
+
+
+
+
+
+•	Système de commentaires dans un[GD10.1] ticket
+
+•	Un administrateur, le client qui a ouvert le ticket et le technicien responsable peuvent ajouter des commentaires.
+
+•	Un commentaire doit respecter les contraintes suivantes.
+•	Il peut y avoir deux types de commentaire : 
+o	Publics (visibles au client[NB11.1])
+o	Internes (visibles aux techniciens et à l’administrateur seulement)
+•	Les commentaires du client sont toujours publics.
+•	Pour chaque commentaire on doit afficher :
+o	La date et l’heure du commentaire
+o	Le créateur
+o	Le contenu
+o	La pièce-jointe si présente
+
+•	Règles :
+o	Ticket fermé : Aucune possibilité d’ajouter un commentaire
+•	Les commentaires sont affichés en ordre chronologique
+
+Indicateurs de performances selon le SLA pour l’admin?[MV12.1]
+
+Navigation
+•	Les éléments ci-dessous doivent faire partie de la navigation selon le cas:
+o	Page d’accueil / Tableau de bord.[NB13.1]
+o	Création de compte 
+o	Connexion / déconnexion 
+o	Profil.
+o	Tableau de bord
+o	Liste des utilisateurs pour le compte administrateur.
+
+3.2 – Résumé des rôles de l’application 
+o	Visiteur (non authentifié)
+•	Permissions :
+	Peut consulter la page d’accueil.
+	Créer un compte ou se connecter
+o	Client
+•	Permissions :
+	Modifier son profil et son mot de passe (excluant le courriel).
+	Consulter son tableau de bord.
+	Créer un ticket.
+	Gérer un ticket 
+o	Technicien
+•	Permissions :
+	Modifier son profil et son mot de passe (excluant le courriel).
+	Consulter son tableau de bord.
+	S’assigner un ticket
+	Gérer un ticket
+o	Administrateur
+•	Permissions :
+	Mêmes permissions que le technicien pour tous les tickets.
+	Lister les utilisateurs de l’application
+	Assigner le rôle technicien à un utilisateur.
+	Activer / désactiver un compte.
+	Archiver un ticket
+	Assigner un ticket
+
+
+3.3 – Jeux de données
+Vous devez créer minimalement les données de tests suivantes :
+•	Deux clients :
+	Courriel : a@asp.ca, b@asp.ca
+	Mot de passe : Password123!
+•	Trois techniciens:
+o	Courriel : tech1@asp.ca, tech2@asp.ca
+o	Mot de passe : Password123!
+•	Un administrateur
+o	Courriel : admin@asp.ca
+o	Mot de passe : Password123!
+Note : le rôle admin est attribué à un utilisateur directement dans la base de données.
+•	Au moins 10 tickets :[MV14.1]
+o	Prévoir différents statuts, catégories et priorités
+o	Assignation à des techniciens différents
+o	Créés par les clients
+o	Ajouter quelques commentaires sur au moins deux tickets, avec pièces jointes pour certains.
+3.4 – Tests automatisés
+Vous devez réaliser un jeu de tests automatisés avec Postman pour tester :
+•	L’authentification et la création de compte (formulaire de connexion et d’inscription).
+•	La collection de tests doit pouvoir être exécutée de manière séquentielle.
+•	Vous devez vous assurer que l’ensemble des cas a été testé.
+•	Les requêtes doivent être dynamiques et utiliser des variables de collection.
+•	N’oubliez pas de remettre votre collection Postman avec le reste de votre projet.
+3.5 – Validation des données  
+Vous devez effectuer la validation de saisie des données (formulaires).
+•	Tous les formulaires doivent inclure une validation en JavaScript personnalisée (aucune validation HTML5 ne doit être utilisée). De plus, toutes les routes de l’API doivent être protégées par une validation serveur, afin de garantir l’intégrité des données reçues.
+•	Tous les champs sont requis sauf indication contraire.
+•	Vous devez retirer les espaces blancs inutiles au début et à la fin des champs de saisie.
+•	Les messages d’erreur doivent être proches des champs en erreur. Vous devez afficher tous les messages en même temps.
+•	Voir les tableaux suivants pour les contraintes spécifiques de validation :
+
+Utilisateur[LD15.1]
+Champ	Contrainte(s)
+Courriel	Est un courriel.
+Unique.
+Pas plus de 50 caractères.
+Mot de passe	Minimum 6 caractères.
+Doit contenir au moins 1 majuscule, 1 chiffre et 1 caractère spécial (#?!@$ %^&*–).
+Confirmation du mot de passe	Égal au mot de passe.
+Nom	Entre 2 et 50 caractères.
+Prénom	Entre 2 et 50 caractères.
+Téléphone	Format canadien
+Rôle	Client, technicien
+
+	Incident
+Champ	Contrainte(s)
+Titre	Entre 3 et 100 caractères.
+Description	Minium 10 caractères
+Catégorie	Choix sélection selon la liste des catégories[MV16.1] 
+Priorité	Basse, Moyenne, Haute, Critique
+Statut	Ouvert, Assigné, En cours, En attente, Résolu, Fermé, Archivé
+
+Commentaires
+Champ	Contrainte(s)
+Contenu	Au moins 3 caractères
+Pièce jointe	Optionnelle
+
+3.5 – Gestion des délais de traitement[MV17.1]
+Afin d’assurer un suivi efficace des incidents, chaque ticket doit respecter un SLA (Service Level Agreement) basé sur sa priorité.
+Le SLA définit :
+•	le délai maximal de prise en charge (assignation) 
+•	le délai maximal de résolution 
+
+Ces délais sont calculés à partir de la date de création du ticket.
+Délais selon la priorité
+Priorité	Délai de prise en charge	Délai de résolution
+Basse	24 heures	72 heures
+Moyenne	8 heures	24 heures
+Haute	2 heures	8 heures
+Critique	30 minutes	4 heures
+
+Règles à respecter
+•	Un ticket doit être assigné à un technicien dans le délai de prise en charge.
+•	Un ticket doit être résolu dans le délai de résolution.
+•	Si un délai est dépassé :
+o	le ticket est considéré en retard
+o	un indicateur visuel doit être affiché dans l’interface (ex : couleur, badge)
+
+3.5 – Sécurité de l’application
+Votre application doit respecter les contraintes de sécurité suivantes :
+•	Vos mots de passe doivent être hachés en utilisant la librairie bcrypt.
+•	Vous devez valider les données du côté serveur et du côté client.
+•	Vous devez retourner les codes d'erreurs appropriés dans les cas suivants :
+•	Accès à une ressource inexistante : code 404. 
+•	Accéder à une ressource protégée sans être authentifié : code 401.
+•	Accéder à une ressource protégée sans les permissions nécessaires : code 403.
+•	Erreurs de validation : code 422.
+•	Erreur de conflit : code 409.
+•	Erreur serveur : code 500.
+4 – REMISE ET ÉVALUATION
+4.1 – Remise sur Léa
+Vous devez remettre, sur Léa, avant le mercredi 13 mai à 17 h 00, un fichier texte contenant l’URL de votre dépôt GIT.
+•	Le dépôt doit inclure:
+•	Un dossier Frontend contenant la partie Vue.js.
+•	Un dossier Backend contenant l’API.
+•	Une exportation de votre BD avec données.
+•	La collection de tests Postman. 
+•	Fichier README.md pour décrire la procédure d’installation.
+4.2 – Grille d’évaluation
+ 
+Évaluation	Élément d’évaluation	Points
+Rencontre de suivi
+(29 avril27-28 novembre) 	Respect des spécifications fonctionnelles.
+Qualité des interfaces graphiques.	15
+Rencontre de suivi
+(4-5 décembre6 mai) 	Idem.	15
+Remise finale
+(132 décembremai) 
+	50% pour le critère suivant : l’application répond aux spécifications fonctionnelles. Respect des spécifications fonctionnelles.	35
+	Qualité du code : maintenabilité, modularité, commentaires, utilisation de Git, tests, utilisation de Bootstrap avec Sass, etc.	24.5
+	Qualité des interfaces graphiques : Ergonomie et responsive, accessibilité, interactivité, rétroaction et expérience utilisateur.	10.5
+	Pénalités : Retard, Problèmes d’exécution, non-respect des consignes.
+Français (-1 pt par faute dans l’interface).	
+
